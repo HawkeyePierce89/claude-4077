@@ -11,7 +11,7 @@ Turn a feature request into an accepted ralphex plan on disk, without executing 
 
 ## Steps
 
-1. **Compose the ticket** as a tech-lead prose ticket, in **English**: goal → requirements → acceptance criteria → out of scope → conventions. No file-by-file steps and no code snippets — the plan agent knows the codebase; the ticket states WHAT and the constraints, not the mechanical HOW. Fold every already-known review remark into it. Add the line: *"Language: the plan file itself must be written in English."* Save it to the scratchpad, NOT the repo.
+1. **Compose the ticket** as a tech-lead prose ticket, in **English**: goal → requirements → acceptance criteria → out of scope → conventions. The feature comes from the invocation argument if one was given, otherwise from the **preceding conversation** (the brainstorm/design discussion) — invoking with no argument after a design chat is the normal flow. If neither gives enough to write a defensible ticket, ask before writing. No file-by-file steps and no code snippets — the plan agent knows the codebase; the ticket states WHAT and the constraints, not the mechanical HOW. Fold every already-known review remark into it. Add the line: *"Language: the plan file itself must be written in English."* Save it to the scratchpad, NOT the repo.
 2. **User gate — HARD STOP.** Show the ticket to the user and wait for explicit approval before launching ralphex. Fold their edits in.
 3. **Launch** from the project repo root, in background:
    ```bash
