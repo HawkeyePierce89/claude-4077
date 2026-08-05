@@ -1,7 +1,7 @@
 {
   "name": "ticket-to-plan",
   "description": "Feature → ticket → ralphex plan → acceptance review cycle: composes a user-gated tech-lead ticket, drives ralphex's interactive plan mode with a real review loop, and independently reviews the executed branch.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": {
     "name": "Anton Karmanov"
   }
