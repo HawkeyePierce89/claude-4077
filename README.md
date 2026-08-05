@@ -11,7 +11,7 @@ A [Claude Code](https://claude.com/claude-code) plugin that wraps [ralphex](http
 ## Install
 
 ```
-/plugin marketplace add HawkeyePierce89/ticket-to-plan
+/plugin marketplace add HawkeyePierce89/claude-4077
 /plugin install ticket-to-plan@HawkeyePierce89
 ```
 
