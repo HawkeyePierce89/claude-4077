@@ -1,25 +1,31 @@
 # ticket-to-plan
 
-A [Claude Code skill](https://agentskills.io/specification) that turns a feature request into an accepted [ralphex](https://github.com/umputun/ralphex) implementation plan on disk — without executing it.
+A [Claude Code](https://claude.com/claude-code) plugin that wraps [ralphex](https://github.com/umputun/ralphex) into a full feature cycle. Two skills:
 
-The cycle it drives:
+**`ticket-to-plan:plan`** — feature request → accepted plan on disk:
 
-1. Claude composes a tech-lead ticket (English, prose: goal / requirements / acceptance / out of scope).
+1. Claude composes a tech-lead ticket (English prose: goal / requirements / acceptance / out of scope) from your discussion or a one-line request.
 2. **You review the ticket** — nothing is sent anywhere before your approval.
 3. Claude launches `ralphex --plan` in the background and drives its interactive prompts through a pipe (which sidesteps the terminal's canonical-mode limits: multi-line paste truncation, the 1024-byte line cap, broken backspace over wrapped lines).
 4. Claude reviews each plan draft against the ticket and the codebase, sends Revise feedback, and iterates until the plan is clean.
 5. On accept, ralphex saves the plan to `docs/plans/` and Claude answers `n` to "Continue with plan implementation?" — running the plan stays your call.
-6. After you run the plan yourself (`ralphex docs/plans/<plan>.md`), ask for a review ("review the implementation") — Claude runs the project's test/build gates, reads every changed file, hand-verifies the load-bearing logic against the plan's acceptance criteria, and reports prioritized findings plus an explicit list of what was *not* verified.
+
+**`ticket-to-plan:review`** — after you run the plan yourself (`ralphex docs/plans/<plan>.md`), the independent acceptance review of the resulting branch: the project's test/build gates first, every changed file read in full, load-bearing logic verified by hand against the plan's acceptance criteria, prioritized findings, and an explicit list of what was *not* verified.
 
 ## Install
 
-```sh
-ln -s "$(pwd)" ~/.claude/skills/ticket-to-plan
+```
+/plugin marketplace add HawkeyePierce89/ticket-to-plan
+/plugin install ticket-to-plan@ticket-to-plan
 ```
 
-Then in Claude Code: `/ticket-to-plan <feature description>`, or just ask to "run this through ralphex".
+For local development, add the checkout instead:
+
+```
+/plugin marketplace add ~/git/ticket-to-plan
+```
 
 ## Requirements
 
-- [ralphex](https://github.com/umputun/ralphex) on `PATH`, configured for your project.
+- [ralphex](https://github.com/umputun/ralphex) on `PATH`, configured for your project (tested against v1.5.0 — the prompt-driving details in the `plan` skill depend on its line-based input).
 - Claude Code with background tasks enabled.

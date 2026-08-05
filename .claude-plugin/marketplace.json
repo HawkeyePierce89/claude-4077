@@ -1,0 +1,13 @@
+{
+  "name": "ticket-to-plan",
+  "owner": {
+    "name": "Anton Karmanov"
+  },
+  "plugins": [
+    {
+      "name": "ticket-to-plan",
+      "source": "./",
+      "description": "Feature → ticket → ralphex plan → acceptance review cycle: a user-gated tech-lead ticket, ralphex plan mode driven with a real review loop, and an independent acceptance review of the executed branch."
+    }
+  ]
+}
