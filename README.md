@@ -12,7 +12,7 @@ A [Claude Code](https://claude.com/claude-code) plugin that wraps [ralphex](http
 
 ```
 /plugin marketplace add HawkeyePierce89/ticket-to-plan
-/plugin install ticket-to-plan@ticket-to-plan
+/plugin install ticket-to-plan@HawkeyePierce89
 ```
 
 For local development, add the checkout instead:
