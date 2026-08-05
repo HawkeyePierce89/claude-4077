@@ -9,6 +9,7 @@ The cycle it drives:
 3. Claude launches `ralphex --plan` in the background and drives its interactive prompts through a pipe (which sidesteps the terminal's canonical-mode limits: multi-line paste truncation, the 1024-byte line cap, broken backspace over wrapped lines).
 4. Claude reviews each plan draft against the ticket and the codebase, sends Revise feedback, and iterates until the plan is clean.
 5. On accept, ralphex saves the plan to `docs/plans/` and Claude answers `n` to "Continue with plan implementation?" — running the plan stays your call.
+6. After you run the plan yourself (`ralphex docs/plans/<plan>.md`), ask for a review ("review the implementation") — Claude runs the project's test/build gates, reads every changed file, hand-verifies the load-bearing logic against the plan's acceptance criteria, and reports prioritized findings plus an explicit list of what was *not* verified.
 
 ## Install
 
