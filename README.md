@@ -8,7 +8,7 @@ A [Claude Code](https://claude.com/claude-code) plugin that wraps [ralphex](http
 
 **`ticket-to-plan:review`** — after you run the plan yourself (`ralphex docs/plans/<plan>.md`), the independent acceptance review of the resulting branch: the project's test/build gates first, every changed file read in full, load-bearing logic verified by hand against the plan's acceptance criteria, prioritized findings, and an explicit list of what was *not* verified.
 
-**`ticket-to-plan:merge`** — when the review is clean, the landing chain: push the branch, open a PR, wait for the repo's checks if it has any, squash-merge, and leave your checkout on the freshly pulled default branch. Anything that breaks the chain (dirty tree, failing check, unmergeable PR) stops it with a report instead of being worked around, and nothing outside the chain happens — no branch deletion, no direct pushes to the default branch.
+**`ticket-to-plan:merge`** — when the review is clean, the landing chain: push the branch, open a PR, wait for the repo's checks if it has any, squash-merge and delete the branch, and leave your checkout on the freshly pulled default branch. Anything that breaks the chain (dirty tree, failing check, unmergeable PR) stops it with a report instead of being worked around, and nothing outside the chain happens — no direct pushes to the default branch, no attribution footers in the PR.
 
 ## Install
 
