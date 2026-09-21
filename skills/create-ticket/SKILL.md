@@ -13,7 +13,7 @@ Produce a tech-lead ticket the user will review. This skill ends with the ticket
 
 1. Compose a tech-lead prose ticket, in **English**: goal → requirements → acceptance criteria → out of scope → conventions. No file-by-file steps, no code snippets — the plan agent knows the codebase; the ticket states WHAT and the constraints. Fold every already-known review remark into it (a remark folded here saves a Revise iteration later). Add the line: *"Language: the plan file itself must be written in English."*
 2. The feature comes from the invocation argument if given, otherwise from the **preceding conversation** (the design discussion). If neither suffices for a defensible ticket, ask before writing.
-3. Save the ticket to the scratchpad as `ticket-<slug>.md` (NOT into the project repo) and show it to the user in full, ending with: edits are folded in on request; when it looks right, they invoke `ticket-to-plan:ralphex`.
+3. Save the ticket to the scratchpad as `ticket-<slug>.md` (NOT into the project repo) and show it to the user in full, ending with: edits are folded in on request; when it looks right, they invoke `ticket-to-plan:ralphex`, which runs plan, code and review back to back.
 
 ## Red flags
 

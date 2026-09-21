@@ -1,5 +1,6 @@
 {
   "name": "HawkeyePierce89",
+  "description": "Anton Karmanov's Claude Code plugins: ticket-to-plan, a ralphex + revmux feature pipeline.",
   "owner": {
     "name": "Anton Karmanov"
   },
@@ -7,7 +8,7 @@
     {
       "name": "ticket-to-plan",
       "source": "./",
-      "description": "Feature → ticket → ralphex plan → acceptance review → merge cycle: a user-gated tech-lead ticket, ralphex plan mode driven with a real review loop, an independent acceptance review of the executed branch, and a CI-gated squash-merge of it."
+      "description": "Feature → ticket → ralphex plan → ralphex code → revmux review → acceptance → merge cycle: a user-gated tech-lead ticket, ralphex plan mode driven with a real review loop, tasks-only execution, a revmux multi-agent review, a by-hand acceptance review, and a CI-gated squash-merge."
     }
   ]
 }

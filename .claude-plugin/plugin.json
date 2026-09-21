@@ -1,7 +1,7 @@
 {
   "name": "ticket-to-plan",
-  "description": "Feature → ticket → ralphex plan → acceptance review → merge cycle: composes a user-gated tech-lead ticket, drives ralphex's interactive plan mode with a real review loop, independently reviews the executed branch, and lands it through a PR with a squash-merge.",
-  "version": "0.4.0",
+  "description": "Feature → ticket → ralphex plan → ralphex code → revmux review → acceptance → merge: composes a user-gated tech-lead ticket, drives ralphex's plan mode with a real review loop, runs the plan through ralphex tasks-only, hands the branch to revmux for a supervised multi-agent review, does the final acceptance by hand, and lands it through a PR with a squash-merge.",
+  "version": "0.5.0",
   "author": {
     "name": "Anton Karmanov"
   }
