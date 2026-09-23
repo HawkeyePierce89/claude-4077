@@ -1,11 +1,13 @@
 # ticket-to-plan
 
-A [Claude Code](https://claude.com/claude-code) plugin that turns a feature request into a merged branch: [ralphex](https://github.com/umputun/ralphex) plans and writes the code, [revmux](https://github.com/umputun/revmux) reviews the diff, Claude does the final acceptance by hand, the plugin lands it. Four skills, three human gates:
+A [Claude Code](https://claude.com/claude-code) plugin that turns a feature request into a merged branch: [ralphex](https://github.com/umputun/ralphex) plans and writes the code, [revmux](https://github.com/umputun/revmux) reviews the diff, Claude does the final acceptance by hand, the plugin lands it. Five skills, three human gates:
 
 **`ticket-to-plan:create-ticket`** — Claude composes a tech-lead ticket (English prose: goal / requirements / acceptance / out of scope) from your design discussion or a one-line request, and shows it to you. Nothing is sent anywhere.
 
-**`ticket-to-plan:ralphex`** — when the ticket looks right, you invoke this (that's the first gate). Three stages run back to back:
-- *plan* — `ralphex --plan` is driven through a pipe (which sidesteps the terminal's canonical-mode limits); Claude reviews each draft against the ticket and the codebase, sends Revise feedback until the plan is clean, accepts, and declines ralphex's own execution.
+**`ticket-to-plan:plan`** — the plan alone: `ralphex --plan` is driven through a pipe (which sidesteps the terminal's canonical-mode limits); Claude reviews each draft against the ticket and the codebase, sends Revise feedback until the plan is clean, accepts, and declines ralphex's own execution. The plan lands in `docs/plans/`; running it is a separate decision.
+
+**`ticket-to-plan:ralphex`** — the full cycle. When the ticket looks right, you invoke this (that's the first gate), or invoke it later on a plan `ticket-to-plan:plan` produced. Three stages run back to back:
+- *plan* — `ticket-to-plan:plan`, skipped when a plan is already there.
 - *code* — `ralphex --tasks-only` runs the plan in the background on `opus:medium`; ralphex creates the branch, commits per task, and archives the plan under `docs/plans/completed/`. Claude watches the log and reports once an hour if nothing terminal happened.
 - *review* — the project's own test/build gates first, then the branch goes to `revmux:revmux` with the plan's acceptance criteria as the goal and the ticket as context, `comprehensive` profile. revmux presents the findings and asks what to do (that's the second gate): fix through ralphex and re-review, or stop. Fixes never happen in the session: Claude writes a short fix plan from the accepted findings, ralphex runs it on the branch, the plan is dropped again so the default branch never carries it, and the next revmux round runs on `final`. Claude adds the gate results.
 

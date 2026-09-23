@@ -1,29 +1,21 @@
 ---
 name: ralphex
-description: Use when the user approves the composed ticket and wants the feature built — "отправляй в ralphex", "send it to ralphex", "запускай", or an explicit invocation right after ticket-to-plan:create-ticket. Runs the whole cycle from ticket to reviewed branch without further prompts until the review findings are on screen.
+description: Use when the user wants the feature built end to end — "отправляй в ralphex", "делай фичу", "запускай план", "build it" — right after ticket-to-plan:create-ticket, or with a plan already produced by ticket-to-plan:plan. Runs plan, code and review without further prompts until the review findings are on screen.
 ---
 
 # Ticket → plan → code → review
 
 ## Overview
 
-Take the approved ticket (the `ticket-<slug>.md` from `ticket-to-plan:create-ticket`; invoking this skill IS the approval) and run three stages back to back: **A** drive `ralphex --plan` to an accepted plan, **B** run `ralphex --tasks-only` on it in the background, **C** run the project's gates and hand the branch to `revmux:revmux` for the review. Two human gates inside this skill: the invocation at the start and revmux's findings question at the end; the acceptance review (`ticket-to-plan:review`) and the merge are separate invocations. Any stage that fails stops the chain with a report; nothing is worked around. If no ticket exists in the scratchpad or the conversation, run `ticket-to-plan:create-ticket` first.
+Take the approved ticket (the `ticket-<slug>.md` from `ticket-to-plan:create-ticket`; invoking this skill IS the approval) and run three stages back to back: **A** get an accepted plan through `ticket-to-plan:plan` (or start from one the user already has), **B** run `ralphex --tasks-only` on it in the background, **C** run the project's gates and hand the branch to `revmux:revmux` for the review. Two human gates inside this skill: the invocation at the start and revmux's findings question at the end; the acceptance review (`ticket-to-plan:review`) and the merge are separate invocations. Any stage that fails stops the chain with a report; nothing is worked around. If no ticket exists in the scratchpad or the conversation, run `ticket-to-plan:create-ticket` first.
 
-Preconditions, checked before anything is launched: `ralphex` and `revmux` on PATH and the `revmux@revmux` plugin installed (stop with install instructions otherwise); the checkout on the repo's default branch with a clean tree (otherwise stop and say so — never checkout, stash or commit on the user's behalf). This applies to a fresh start; a resume after a failure runs on the plan's branch, see step 7.
+Preconditions, checked before anything is launched: `ralphex` and `revmux` on PATH and the `revmux@revmux` plugin installed (stop with install instructions otherwise); the checkout on the repo's default branch with a clean tree apart from an uncommitted plan file (otherwise stop and say so — never checkout, stash or commit on the user's behalf). This applies to a fresh start; a resume after a failure runs on the plan's branch, see step 7.
 
 Notation: `$S` is the session scratchpad directory; `N` is a run number you increment on every launch (a resume is a new `N`), so no log or answers file is ever reused.
 
 ## Stage A: plan
 
-1. Launch from the project repo root, in background:
-   ```bash
-   : > "$S/answers-N.txt"   # ALWAYS a fresh file — see red flags
-   tail -n +1 -f "$S/answers-N.txt" | ralphex --plan "$(cat "$S/ticket-<slug>.md")" --no-color > "$S/plan-N.log" 2>&1
-   ```
-   Arm a Monitor on the log: `grep -E --line-buffered '^\s+[0-9]+\) |QUESTION|docs/plans/|panic:|plan creation|rejected|failed'`. Interactive prompts (`Enter number…`, `Continue with plan…`) have **no trailing newline** and never trigger the monitor — detect them by the option lines above them, or `tail -c` the log directly.
-2. Answer prompts by appending ONE line to the answers file per prompt. Clarifying questions → answer from the ticket; product-level questions → stop and ask the user.
-3. Review each draft honestly against the ticket and the codebase (verify claims in the code — don't wave anything through). Remarks → send `2`, then the feedback as one line (a pipe has no 1024-byte tty limit). On the next iteration, **diff the two drafts** to verify the fix landed with no unrelated drift. Accept (`1`) only when clean; a genuinely clean first draft may be accepted — do not invent cosmetic revisions.
-4. After accept: wait for `created docs/plans/<file>.md` in the log, then check the log tail for `Continue with plan implementation? [y/N]` and append `n` as one line to the answers file. NEVER `y`: `y` runs ralphex's full mode with its own review phases, which this pipeline replaces with revmux. Kill the `tail` keeper, confirm `pgrep -x ralphex` is empty, TaskStop the monitor. Report the plan path and the review iterations in one short paragraph, then go straight to stage B.
+1. If the user pointed at an existing plan (a path, "запускай план", or the plan `ticket-to-plan:plan` just reported), skip to stage B with it: it must be an untouched plan in `docs/plans/` with `- [ ]` items, either uncommitted on the default branch or already committed. Otherwise invoke `ticket-to-plan:plan` and follow it to its end (ralphex stopped, `n` sent on the Continue prompt, plan path reported); its preconditions are this stage's preconditions. Then go straight to stage B.
 
 ## Stage B: code
 
@@ -47,11 +39,8 @@ Notation: `$S` is the session scratchpad directory; `N` is a run number you incr
 
 | Mistake | Consequence |
 |---|---|
-| Launching on a ticket the user never saw | The approval gate is `create-ticket` + the user's decision to invoke this skill — don't shortcut it |
-| Reusing an old answers file | `tail -n +1` replays previous answers — the plan self-accepts instantly |
-| Queueing two answers at once | ralphex's `AskYesNo` creates a *fresh* bufio reader; a queued line sits in the old reader's buffer and is lost |
+| Launching on a ticket the user never saw, or on a plan they never approved | The approval gate is `create-ticket` (or `plan`) + the user's decision to invoke this skill — don't shortcut it |
 | `y` on the Continue prompt | Runs ralphex's full pipeline with its own review phases on top of revmux |
-| Trusting the monitor for prompt detection | Newline-less prompt lines never fire it; the run stalls silently — check the log tail |
 | Launching stage B from a feature branch | ralphex only creates the branch when on the default branch; on any other branch it silently runs the plan there |
 | Editing code in the session while stage B runs | Two writers on one branch; ralphex commits whatever it finds |
 | Reporting "done" from the completion line alone | Verify branch, clean tree, ticked plan in `completed/`, commits — a completion signal with `- [ ]` left is a known ralphex warning |
