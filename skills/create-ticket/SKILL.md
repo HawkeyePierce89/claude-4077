@@ -5,6 +5,21 @@ description: Use when the user asks to compose a developer ticket for a feature 
 
 # Compose the ticket
 
+## Agent compatibility
+
+These instructions support Claude Code and Codex. In Claude Code, use the
+`ticket-to-plan:<name>` skill names below. In Codex, invoke the installed skill
+as `$<name>` (for example, `$ralphex`); when following a cross-skill reference,
+read that skill's `SKILL.md` and follow it. Do not assume Claude's plugin or
+Skill tool exists in Codex. A user's explicit request for the corresponding
+stage counts as invocation; automatic skill discovery alone is not approval.
+
+Use the harness scratchpad if available. Otherwise create a session directory
+with `mktemp -d "${TMPDIR:-/tmp}/ticket-to-plan.XXXXXX"`, keep its path in the
+conversation, and reuse it for later stages. In Codex, tell the user to invoke
+`$ralphex` when the ticket is ready.
+
+
 ## Overview
 
 Produce a tech-lead ticket the user will review. This skill ends with the ticket on screen — it never launches ralphex: the user signals approval by invoking `ticket-to-plan:ralphex` themselves (possibly after asking for edits).

@@ -5,6 +5,21 @@ description: Use when the user asks for the final acceptance of an implemented f
 
 # Acceptance review of an executed plan
 
+## Agent compatibility
+
+These instructions support Claude Code and Codex. In Claude Code, use the
+`ticket-to-plan:<name>` skill names below. In Codex, invoke the installed skill
+as `$<name>` (for example, `$ralphex`); when following a cross-skill reference,
+read that skill's `SKILL.md` and follow it. Do not assume Claude's plugin or
+Skill tool exists in Codex. A user's explicit request for the corresponding
+stage counts as invocation; automatic skill discovery alone is not approval.
+
+If the harness has no LSP tool, locate definitions, callers and implementors
+with `rg`, then read the relevant ranges. Report any limits of this fallback.
+Use the harness scratchpad, or a session directory created with
+`mktemp -d "${TMPDIR:-/tmp}/ticket-to-plan.XXXXXX"`, for gate logs.
+
+
 ## Overview
 
 revmux already reviewed the diff for defects and its loop fixed what gated; this is the independent final acceptance before merge, done by hand in this session. Review against the **plan** in `docs/plans/completed/` (ralphex moves it there when every task is done), which carries the requirements and acceptance criteria, and against the **revmux record** under `.revmux/tasks/<task>/`, which says what was already found. The deliverable is a report — findings go to the user, whose pipeline applies them.

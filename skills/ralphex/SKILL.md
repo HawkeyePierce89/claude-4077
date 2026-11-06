@@ -5,11 +5,35 @@ description: Use when the user wants the feature built end to end — "отпр�
 
 # Ticket → plan → code → review
 
+## Agent compatibility
+
+These instructions support Claude Code and Codex. In Claude Code, use the
+`ticket-to-plan:<name>` skill names below. In Codex, invoke the installed skill
+as `$<name>` (for example, `$ralphex`); when following a cross-skill reference,
+read that skill's `SKILL.md` and follow it. Do not assume Claude's plugin or
+Skill tool exists in Codex. A user's explicit request for the corresponding
+stage counts as invocation; automatic skill discovery alone is not approval.
+
+In Codex, the revmux dependency is an installed `revmux` skill (invoked as
+`$revmux`), not a Claude marketplace plugin. Read its instructions before
+launching any stage; if absent, stop and ask for it to be installed using
+revmux's Codex installation instructions. Do not invent its CLI workflow.
+Use the harness scratchpad, or a session directory created with
+`mktemp -d "${TMPDIR:-/tmp}/ticket-to-plan.XXXXXX"`; reuse the ticket's directory.
+Monitor/TaskStop below are Claude facilities. In Codex, keep long commands in
+persistent execution sessions, poll their returned IDs, inspect the logs,
+and stop only monitors owned by this run. Follow the harness's progress-update
+cadence even when the monitoring intervals below are longer. No background
+session capability means reporting that limitation before launching the run.
+The task model below configures ralphex's worker, not the host assistant;
+using Codex does not remove ralphex's configured backend/authentication needs.
+
+
 ## Overview
 
 Take the approved ticket (the `ticket-<slug>.md` from `ticket-to-plan:create-ticket`; invoking this skill IS the approval) and run three stages back to back: **A** get an accepted plan through `ticket-to-plan:plan` (or start from one the user already has), **B** run `ralphex --tasks-only` on it in the background, **C** run the project's gates and hand the branch to `revmux:revmux` for the review. Two human gates inside this skill: the invocation at the start and revmux's findings question at the end; the acceptance review (`ticket-to-plan:review`) and the merge are separate invocations. Any stage that fails stops the chain with a report; nothing is worked around. If no ticket exists in the scratchpad or the conversation, run `ticket-to-plan:create-ticket` first.
 
-Preconditions, checked before anything is launched: `ralphex` and `revmux` on PATH and the `revmux@revmux` plugin installed (stop with install instructions otherwise); the checkout on the repo's default branch with a clean tree apart from an uncommitted plan file (otherwise stop and say so — never checkout, stash or commit on the user's behalf). This applies to a fresh start; a resume after a failure runs on the plan's branch, see step 7.
+Preconditions, checked before anything is launched: `ralphex` and `revmux` on PATH and the revmux skill available (`revmux@revmux` plugin in Claude Code, installed `revmux` skill in Codex) (stop with install instructions otherwise); the checkout on the repo's default branch with a clean tree apart from an uncommitted plan file (otherwise stop and say so — never checkout, stash or commit on the user's behalf). This applies to a fresh start; a resume after a failure runs on the plan's branch, see step 7.
 
 Notation: `$S` is the session scratchpad directory; `N` is a run number you increment on every launch (a resume is a new `N`), so no log or answers file is ever reused.
 

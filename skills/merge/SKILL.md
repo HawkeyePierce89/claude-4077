@@ -5,6 +5,20 @@ description: Use when the user wants the reviewed branch landed — "мержи"
 
 # Land the reviewed branch
 
+## Agent compatibility
+
+These instructions support Claude Code and Codex. In Claude Code, use the
+`ticket-to-plan:<name>` skill names below. In Codex, invoke the installed skill
+as `$<name>` (for example, `$ralphex`); when following a cross-skill reference,
+read that skill's `SKILL.md` and follow it. Do not assume Claude's plugin or
+Skill tool exists in Codex. A user's explicit request for the corresponding
+stage counts as invocation; automatic skill discovery alone is not approval.
+
+Use the available execution tool for `git` and `gh`. For a multiline PR body,
+write the text to a temporary file and pass `--body-file` instead of embedding
+it in shell quoting. The no-attribution rule applies to either host assistant.
+
+
 ## Overview
 
 Push the current branch, open a PR, wait for CI if the repo has any, squash-merge with branch deletion, and leave the checkout on the freshly pulled default branch. The user's invocation is the merge approval — for exactly this chain. Anything that breaks the chain (dirty tree, failing checks, unmergeable PR) **stops it and is reported**; it is never worked around.
